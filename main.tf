@@ -20,7 +20,7 @@ output "instance_name" {
 }
 output "instance_type" {
   value = aws_instance.webserver1.instance_type
-  sensitive = true
+  sensitive = false
 }
 
 
