@@ -1,51 +1,35 @@
 provider "aws" {
-  region  = "us-east-1"
-  profile = "default"
+  region = "us-east-1"
+  alias  = "virginia"
 }
 
-provider "aws" {
-  region  = "us-east-2"
-  alias   = "ohio"
-  profile = "default"
-}
-# locals {
-#   servers = {
-#     dev  = "t3.small"
-#     prod = "t3.micro"
-#     uat  = "c7i-flex.large"
-#   }
-# }
+resource "aws_instance" "webserver" {
+  provider               = aws.virginia
+  ami                    = "ami-0476eb1110148a99f"
+  instance_type          = "t3.micro"
+  vpc_security_group_ids = ["sg-0dedd49f83815ac2d"]
+  key_name               = "testing"
 
+  # connection {
+  #   type        = "ssh"
+  #   user        = "ec2-user"
+  #   private_key = file("/home/ec2-user/mycode/instance-key.pem")
+  # host        = self.public_ip
+  # }
 
-resource "aws_instance" "webserver1" {
-  provider = aws.ohio
-  #   for_each      = local.servers
-  ami = "ami-04ea4e8270c27626c"
-  #   instance_type = each.value
-  instance_type = "t3.micro"
-  #   region        = "ap-south-1"
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo yum update -y",
+  #     "sudo yum install httpd -y",
+  #     "sudo systemctl start httpd",
+  #     "sudo systemctl enable httpd",
+  #     "echo \"<h1>Welcome </h1>\" | sudo tee /var/www/html/index.html"
+  #   ]
+  # }
+  # user_data     = file("${path.module}/userdata.txt")
   tags = {
-    Name = "Webserver1"
-    # Name = " Webserver-${each.key}-server"
+    Name = "mumbai-webserver"
   }
+
 }
 
-resource "aws_instance" "webserver2" {
-  ami           = "ami-0476eb1110148a99f"
-  instance_type = "t3.micro"
-  #   region        = "us-east-1"
-  tags = {
-    Name = "Webserver2"
-  }
-}
-
-
-# resource "aws_s3_bucket" "bucket-test" {
-#     bucket = "mahesh-s3bucket-1996test"
-#     depends_on = [aws_instance.webserver1]
-# }
-
-# output "instance_id" {
-# description = " The id of instance"
-# value = aws_instance.webserver1[*].id
-# }
