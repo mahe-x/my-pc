@@ -8,7 +8,7 @@ resource "aws_instance" "webserver" {
   ami                    = "ami-0476eb1110148a99f"
   instance_type          = "t3.micro"
   vpc_security_group_ids = ["sg-0dedd49f83815ac2d"]
-  key_name               = "testing"
+  # key_name               = "testing"
 
   # connection {
   #   type        = "ssh"
